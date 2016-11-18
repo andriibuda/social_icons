@@ -1,0 +1,134 @@
+<?php
+/**
+* @file
+* A description of what your module does.
+*/
+
+/**
+ * Implements hook_menu().
+ */
+function social_icons_menu() {
+  $items = array();
+  $items['admin/config/administration/social_icons'] = array(
+    'title' => t('Social Icons main page'),
+    'description' => 'Page for adding social icons',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('social_icons_page_form'),
+    'access callback' => TRUE,
+    'access arguments' => 'administer site configuration',
+    'type'=> MENU_NORMAL_ITEM,
+  );
+  $items['admin/config/administration/social_icons/list'] = array(
+    'title' => t('Social Icons List'),
+    'description' => 'This is a list of existing social icons',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => 0,
+  );
+  $items['admin/config/administration/social_icons/add'] = array(
+    'title' => t('Add New Icons'),
+    'description' => 'Here you can add a new media icon',
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 1,
+  );
+  return $items;
+}
+
+/**
+ * Build social icons form.
+ */
+function social_icons_page_form($form, &$form_state) {
+  $form = array();
+  $form['settings'] = array(
+    '#title' => t('Add icon'),
+    '#type' => 'fieldset',
+    '#maxlength' => 64,
+    '#size' => 15,
+    '#required' => TRUE,
+    '#atributes' => array('class' => array('link')),
+  );
+  $form['settings']['title'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Title'),
+    '#size' => 50,
+    //'#required' => TRUE,
+  );
+
+
+
+  $form['settings']['link'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Link to the web-page'),
+    '#size' => 50,
+    //'#required' => TRUE,
+  );
+
+
+
+  $form['settings']['image_simple'] = array(
+    '#type' => 'managed_file',
+    '#title' => t('Choose your icon'),
+    '#size' => 50,
+    "#upload_validators"  => array("file_validate_extensions" => array("png gif jpg")),
+    //'#required' => TRUE,
+  );
+
+
+
+  $form['settings']['image_hover'] = array(
+    '#type' => 'managed_file',
+    '#title' => t('Choose your hover icon'),
+    '#size' => 50,
+    "#upload_validators"  => array("file_validate_extensions" => array("png gif jpg")),
+    //'#required' => TRUE,
+  );
+
+
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Submit'),
+  );
+  return $form;
+}
+
+
+
+/**
+ * Implements hook_validate().
+ */
+function social_icons_page_form_validate($form_id, &$form_state) {
+
+  function is_url($url) {
+    return preg_match('|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i', $url);
+  }
+
+  if ( !is_url($form_state['values']['link']) ) {
+    form_set_error('link', 'What it is?');
+  };
+
+    /*
+    switch ( exif_imagetype($form_state['values']['image_simple']) ) {
+    case IMAGETYPE_GIF:
+      break;
+    case IMAGETYPE_JPEG:
+      break;
+    case IMAGETYPE_PNG:
+      break;
+    case IMAGETYPE_BMP:
+      break;
+    case IMAGETYPE_ICO:
+      break;
+    case IMAGETYPE_SWF:
+      break;
+    case IMAGETYPE_JPC:
+      break;
+    case IMAGETYPE_JP2:
+      break;
+    case IMAGETYPE_JPX:
+      break;
+    default:
+      form_set_error('image_simple', 'What it is?');
+  }
+    */
+
+}
